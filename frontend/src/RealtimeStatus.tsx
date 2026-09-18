@@ -7,7 +7,7 @@ export default function RealtimeStatus() {
   );
 
   useEffect(() => {
-    const ws = new WebSocket("REPLACE_ME/ws/alerts");
+    const ws = new WebSocket("wss://threatlens-backend-ig3f.onrender.com/ws/alerts");
 
     ws.onopen = () => {
       setConnected(true);
