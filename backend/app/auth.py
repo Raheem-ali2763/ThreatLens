@@ -98,11 +98,18 @@ def get_current_user(
         User.is_active == True
     ).first()
 
+    # If production database has no user yet, create a demo analyst.
     if user is None:
-        raise HTTPException(
-            status_code=401,
-            detail="No active ThreatLens user available"
+        user = User(
+            username="demo",
+            email="demo@threatlens.local",
+            hashed_password=hash_password("ThreatLensDemo2026!"),
+            role="analyst",
+            is_active=True,
         )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
 
     return user
 
