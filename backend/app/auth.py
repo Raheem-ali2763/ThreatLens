@@ -65,38 +65,43 @@ def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+    """
+    ThreatLens demo mode:
+    - If a valid JWT is provided, use that user.
+    - If no/invalid JWT is provided, use an active database user.
+    This allows the dashboard to work without showing a login page.
+    """
 
-    try:
-        payload = jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM]
-        )
+    if token:
+        try:
+            payload = jwt.decode(
+                token,
+                SECRET_KEY,
+                algorithms=[ALGORITHM]
+            )
 
-        username = payload.get("sub")
+            username = payload.get("sub")
 
-        if username is None:
-            raise credentials_exception
+            if username:
+                user = db.query(User).filter(
+                    User.username == username
+                ).first()
 
-    except JWTError:
-        raise credentials_exception
+                if user and user.is_active:
+                    return user
 
+        except JWTError:
+            pass
+
+    # Demo/direct-access fallback
     user = db.query(User).filter(
-        User.username == username
+        User.is_active == True
     ).first()
 
     if user is None:
-        raise credentials_exception
-
-    if not user.is_active:
         raise HTTPException(
-            status_code=403,
-            detail="User account is inactive"
+            status_code=401,
+            detail="No active ThreatLens user available"
         )
 
     return user

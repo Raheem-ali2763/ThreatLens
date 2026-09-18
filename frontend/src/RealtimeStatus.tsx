@@ -7,7 +7,7 @@ export default function RealtimeStatus() {
   );
 
   useEffect(() => {
-    const ws = new WebSocket("ws://127.0.0.1:8001/ws/alerts");
+    const ws = new WebSocket("REPLACE_ME/ws/alerts");
 
     ws.onopen = () => {
       setConnected(true);

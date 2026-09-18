@@ -19,7 +19,7 @@ export default function LiveAlertOverlay() {
     let reconnectTimer: number | undefined;
 
     const connect = () => {
-      socket = new WebSocket("ws://127.0.0.1:8001/ws/alerts");
+      socket = new WebSocket("wss://threatlens-backend-ig3f.onrender.com/ws/alerts");
 
       socket.onmessage = (event) => {
         try {
