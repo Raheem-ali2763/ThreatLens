@@ -33,7 +33,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-const API = "http://127.0.0.1:8001";
+const API = "https://threatlens-backend-ig3f.onrender.com";
 
 type IOC = {
   id: number;
@@ -53,9 +53,7 @@ function severityClass(severity: string) {
 }
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => Boolean(localStorage.getItem("threatlens_token"))
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -63,7 +61,7 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem("threatlens_token");
-    setIsAuthenticated(false);
+    setIsAuthenticated(true);
   };
 
   const [page, setPage] = useState("IOC Intelligence");
